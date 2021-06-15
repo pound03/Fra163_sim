@@ -27,64 +27,46 @@ time_count=0
 time_delta=1/FPS
 
 #*enviroment setup
-v=class_game.Velocity(500,500)
-
 
 #*setup
 pygame.init()
 screen = pygame.display.set_mode((size_screen_wide,size_screen_hight))
-pygame.display.set_caption("test")
-background=pygame.image.load("background.jpg")
+pygame.display.set_caption("hellp_world")
+background=pygame.image.load("4.jpg")
 
-base_font = pygame.font.Font(None, 32)
+draw_list=[]
+check_list=[]
 
-rect_fight = pygame.Rect(20, size_screen_hight-250, 160, 32)
-color_active_fight = pygame.Color('lightskyblue3')
-color_passive_fight = pygame.Color('chartreuse4')
-color_fight = color_passive_fight
-active_fight = False
-Text_fight = "Fight"
+fight=class_game.Button(20, 250, 160, 32,"fight")
+draw_list.append(fight)
+check_list.append(fight)
 
-rect_cancel = pygame.Rect(20, size_screen_hight-200, 160, 32)
-color_cancel = pygame.Color('red')
-active_cancel = False
-Text_cancel = "Cancel"
+cancel=class_game.Button(20, 200, 160, 32,"Cancel","red","red")
+draw_list.append(cancel)
+check_list.append(cancel)
+active_1st=True
 
-rect_time = pygame.Rect(20, size_screen_hight-150, 160, 32)
-color_time = pygame.Color('lightskyblue3')
+speed=class_game.Input_box(60, 350, 120, 32,"400")
+draw_list.append(speed)
+check_list.append(speed)
+
+degree=class_game.Input_box(60, 300, 120, 32,"45")
+draw_list.append(degree)
+check_list.append(degree)
+
+time=class_game.labbel(20, 150, 160, 32)
+draw_list.append(time)
 Text_time = "0.00         "
 
-rect_speed = pygame.Rect(20, size_screen_hight-350, 100, 32)
-color_active_speed = pygame.Color('lightskyblue3')
-color_passive_speed = pygame.Color('chartreuse4')
-color_speed = color_passive_speed
-active_speed = False
-Text_speed = "500"
+check_speed=class_game.Check_box(20, 350, 32, 32)
+draw_list.append(check_speed)
+check_list.append(check_speed)
 
-rect_degree = pygame.Rect(20, size_screen_hight-300, 100, 32)
-color_active_degree = pygame.Color('lightskyblue3')
-color_passive_degree = pygame.Color('chartreuse4')
-color_degree = color_passive_degree
-active_degree = False
-Text_degree = "45"
+check_degree=class_game.Check_box(20, 300, 32, 32)
+draw_list.append(check_degree)
+check_list.append(check_degree)
 
-rect_degree_check = pygame.Rect(20, size_screen_hight-300, 100, 32)
-color_active_degree = pygame.Color('lightskyblue3')
-color_passive_degree = pygame.Color('chartreuse4')
-color_degree = color_passive_degree
-active_degree = False
-Text_degree = "45"
-
-rect_degree = pygame.Rect(20, size_screen_hight-300, 100, 32)
-color_active_degree = pygame.Color('lightskyblue3')
-color_passive_degree = pygame.Color('chartreuse4')
-color_degree = color_passive_degree
-active_degree = False
-Text_degree = "45"
-
-mode=0
-
-active_1st=True
+ball=class_game.ball(10)
 #*start
 while True:
     #exit
@@ -94,96 +76,50 @@ while True:
             exit()
         if event.type == pygame.MOUSEBUTTONDOWN:
             # * all will False
-            active_speed = False
-            active_degree = False
+            speed.active = False
+            degree.active = False
 
-            if rect_fight.collidepoint(event.pos):
-                active_fight = True
-            elif rect_cancel.collidepoint(event.pos):
-                active_cancel = True
-            elif rect_speed.collidepoint(event.pos):
-                active_speed = True
-            elif rect_degree.collidepoint(event.pos):
-                active_degree = True
+            for i in check_list:
+                i.check(event.pos)
+        
         if event.type == pygame.KEYDOWN:
-            if active_speed:
-                if event.key == pygame.K_BACKSPACE:
-                    Text_speed = Text_speed[:-1]
-                elif (event.unicode >= "0" and event.unicode <="9") or event.unicode <=".":
-                    Text_speed += event.unicode
-            if active_degree:
-                if event.key == pygame.K_BACKSPACE:
-                    Text_degree = Text_degree[:-1]
-                elif (event.unicode >= "0" and event.unicode <="9") or event.unicode <=".":
-                    Text_degree += event.unicode
+            speed.new_word(event)
+            degree.new_word(event)
 
 
-    if active_fight:
-        color_fight = color_active_fight
-    else:
-        color_fight = color_passive_fight
-
-    if active_speed:
-        color_speed = color_active_speed
-    else:
-        color_speed = color_passive_speed
-
-    if active_degree:
-        color_degree = color_active_degree
-    else:
-        color_degree = color_passive_degree
-    
+    time.update_text(Text_time[0:5]+"   s")
     #*compute
     screen.fill("black")
     screen.blit(background,(200,0))
 
-    pygame.draw.rect(screen, color_fight, rect_fight)
-    pygame.draw.rect(screen, color_speed, rect_speed)
-    pygame.draw.rect(screen, color_degree, rect_degree)
-    pygame.draw.rect(screen, color_cancel, rect_cancel)
+    for i in draw_list:
+        i.draw(screen)
 
-    if active_fight:
+    if fight.active:
         if active_1st:
-            v.setspeed(int(Text_speed),int(Text_degree))
             active_1st = False
-        pygame.draw.circle(screen,'red', (v.get_position_x(time_count)+size_ui,size_screen_hight-v.get_position_y(time_count)), 20)
+            ball.v.setspeed(int(speed.Text),int(degree.Text))
+        # pygame.draw.circle(screen,'red', (v.get_position_x(time_count)+size_ui,size_screen_hight-v.get_position_y(time_count)), 20)
+        
+        ball.run(screen,time_count)
         time_count=time_count+time_delta
         Text_time=str(time_count)
 
-    if active_cancel:
+    if cancel.active:
         time_count=0
-        v.resetpositon()
-        active_fight=False
-        active_cancel=False
+        ball.v.resetpositon()
+        fight.active=False
+        cancel.active=False
         active_1st = True
         Text_time = "0.00         "
 
-    Text_time=Text_time[0:5]+"   s"
-    text_surface_time = base_font.render(Text_time, True, (255, 255, 255))
-    screen.blit(text_surface_time, (rect_time.x+40, rect_time.y+5))
-
-    text_surface_fight = base_font.render(Text_fight, True, (255, 255, 255))
-    screen.blit(text_surface_fight, (rect_fight.x+40, rect_fight.y+5))
-
-    text_surface_speed = base_font.render(Text_speed, True, (255, 255, 255))
-    screen.blit(text_surface_speed, (rect_speed.x+20, rect_speed.y+5))
-
-    text_surface_degree = base_font.render(Text_degree, True, (255, 255, 255))
-    screen.blit(text_surface_degree, (rect_degree.x+20, rect_degree.y+5))
-
-    text_surface_cancel = base_font.render(Text_cancel, True, (255, 255, 255))
-    screen.blit(text_surface_cancel, (rect_cancel.x+40, rect_cancel.y+5))
     #wait
     clock.tick(FPS)
 
-
     #display
-    pygame.display.flip()
+    pygame.display.update()
 
-    
-    # print("x={:.2f},y={:.2f}".format(v.get_position_x(time_count),v.get_position_y(time_count)))
-    if(v.get_position_y(time_count) < -1):
+    if(ball.check_fall(time_count)):
         time_count=0
-        v.resetpositon()
-        active_fight=False
+        fight.active = False
         active_1st = True

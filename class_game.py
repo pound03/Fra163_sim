@@ -11,7 +11,6 @@ class Velocity:
         self.V_y=input_V_y
         self.gravity=9.81
 
-
     def get_position_x(self,time):
         return self.V_x*time*scale
 
@@ -27,7 +26,7 @@ class Velocity:
 
 class Button:
     def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",color1_input='yellow',color2_input='pink'):
-        self.base_font = pygame.font.Font(None, 32)
+        self.base_font = pygame.font.Font(None, base_front)
         self.rect_class = pygame.Rect(posi_x_input, posi_y_input, size_x_input, size_y_input)
         self.color_active = pygame.Color(color1_input)
         self.color_passive = pygame.Color(color2_input)
@@ -55,28 +54,38 @@ class Button:
         screen.blit(text_surface_time, (self.rect_class.x+40, self.rect_class.y+5))
 
 class labbel:
-    def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",color1_input="Gray "):
-        self.base_font = pygame.font.Font(None, 28)
+    def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",color1_input="Gray ",bool=True,word1="",word2="",size_front=front_labbel):
+        self.base_font = pygame.font.Font(None, size_front)
         self.rect_class = pygame.Rect(posi_x_input, posi_y_input, size_x_input, size_y_input)
         self.color = pygame.Color(color1_input)
         self.Text = Text_input
+        self.word_front=word1;
+        self.word_end=word2;
+        self.bool=bool;
+
     def draw(self,screen):
-        pygame.draw.rect(screen,self.color,self.rect_class)
-        text_surface_time = self.base_font.render(self.Text, True, (255, 255, 255))
-        screen.blit(text_surface_time, (self.rect_class.x+10, self.rect_class.y+5))
+        x=0
+        if(self.bool):
+            x=5
+            pygame.draw.rect(screen,self.color,self.rect_class)
+
+        dummy=self.Text + "     "
+        dummy= self.word_front + dummy + self.word_end
+        text_surface_time = self.base_font.render(dummy, True, (0, 0, 0))
+        screen.blit(text_surface_time, (self.rect_class.x+10, self.rect_class.y+x))
     def update_text(self,text_input):
         self.Text = text_input
 
 class Input_box:
-    def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",bool= True,word1="",word2="",color1_input='BLUE',color2_input='chartreuse4'):
-        self.base_font = pygame.font.Font(None, 32)
+    def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",not_use= True,word1="",word2="",color1_input='BLUE',color2_input='chartreuse4'):
+        self.base_font = pygame.font.Font(None, base_front)
         self.rect_class = pygame.Rect(posi_x_input, posi_y_input, size_x_input, size_y_input)
         self.color_active = pygame.Color(color1_input)
         self.color_passive = pygame.Color(color2_input)
         self.color = self.color_passive
         self.active = False
         self.Text = Text_input
-        self.off = bool
+        self.off = not_use
         self.word_front=word1;
         self.word_end=word2;
 
@@ -159,7 +168,7 @@ class ball:
         pygame.draw.circle(screen,self.color, (self.posi_x,self.posi_y), self.size)
 
     def check_fall(self,time):
-        if(self.v.get_position_y(time)<-1):
+        if(self.v.get_position_y(time)+self.posi_y_add<-1):
             return True
         else:
             return False
@@ -168,16 +177,9 @@ class ball:
             self.size=size_intput*10
         else:
             self.size=10
-
-def findVfromk(k,m,x):
-    v=k*x*x/m
-    v=np.sqrt(v)
-    return v
-
-def findxfromv(k,m,v):
-    x=v*v*m/k
-    x=np.sqrt(x)
-    return x
+    def setposion_start(self,x,y):
+        self.posi_x_add=x
+        self.posi_y_add=y
 
 class Tail:
     def __init__(self,list_x=[],list_y=[],size_intput=1,color1_input='red'):
@@ -199,3 +201,111 @@ class Tail:
     def reset(self):
         self.x = []
         self.y = []
+
+def findVfromk(k,m,x):
+    v=k*x*x/m
+    v=np.sqrt(v)
+    return v
+
+def findxfromv(k,m,v):
+    x=v*v*m/k
+    x=np.sqrt(x)
+    return x
+
+def findvfromo(sx,sy,g,o):
+    sy=-sy
+    degree=np.deg2rad(o)
+    tan=np.tan(degree)
+    cos=np.cos(degree)
+    a=tan*sx
+    b=(g*sx*sx)/(cos*cos*2)
+    v0=(sy-a)/(-b)
+    v0=np.sqrt(v0)
+    v0=1/v0
+    v0=round(v0,5)
+    # print(a,end="a\n")
+    # print(sy-a,end="sy-a\n")
+    # print(b,end="b\n")
+    # print(v0,end="v0\n")
+    # print(v0,end="vroot\n")
+    return v0
+
+def eqation(a,b,c):
+    # calculate the discriminant  
+    d = (b**2) - (4*a*c)
+    # print("b**2 : %.3f\t4*a*c : %.3f" % (b**2,4*a*c))
+    if(d<0):
+        print("error root less < 0")
+        return 0
+    # find two solutions  
+    sol1 = (-b-np.sqrt(d))/(2*a)  
+    sol2 = (-b+np.sqrt(d))/(2*a)
+    # return [sol1,sol2]
+    if(sol1 > sol2):
+        # print(sol1)
+        return sol1
+    else:
+        # print(sol2)
+        return sol2
+
+def findomax(sy,g,v):
+    a=2*g*(-sy)+v*v
+    b=2*g*(-sy)+2*v*v
+    coso=np.sqrt(a/b)
+    jearn_rad=np.arccos(coso)
+    jearn_degree=np.rad2deg(jearn_rad)
+    return jearn_rad
+
+def loop_findo(sx_need,sy,g,v):
+    percent=1
+    up_level=1+percent*0.01
+    low_level=1-percent*0.01
+    jearn=10
+    # print("in")  
+    for i in range(90*jearn,0,-1):
+        # print()
+        o_degree=i/jearn
+        o_rad=np.deg2rad(o_degree)
+        cos_loop=np.cos(o_rad)
+        sin_loop=np.sin(o_rad)
+        # print("v : %.3f \tsin : %.3f" % (v,sin_loop))
+        # print("a : %.3f \tb : %.3f \tc : %.3f" % (g/2,v*-1*sin_loop,sy))
+        t_loop=eqation(g/2,v*-1*sin_loop,sy)
+        # print("degree : %.3f\tsx_need : %.3f\tsy_need : %.3f" %(o_degree,sx_need,sy))
+        """
+        for j in t_loop:
+            sx_loop=v*cos_loop*j
+            print("t_loop : %.3f\tsx_loop : %.3f" %(j,sx_loop))
+            if(sx_loop>=sx_need * low_level and sx_loop<=sx_need * up_level):
+            #* that ok
+                return o_degree
+        """
+        sx_loop=v*cos_loop*t_loop
+
+        # print("t_loop : %.3f\tsx_loop : %.3f" %(t_loop,sx_loop))
+        if(sx_loop>=sx_need * low_level and sx_loop<=sx_need * up_level):
+            #* that ok
+            # print("ok")
+            return o_degree
+        else:
+            continue
+
+    print("fall")
+    return 0
+
+def findofromv(sx_need,sy,g,v):
+    omax_rad=findomax(sy,g,v)
+
+    cos_o=np.cos(omax_rad)
+    sin_o=np.tan(omax_rad)
+    
+    t=eqation(g/2,v*-1*sin_o,sy)
+    if(t==0):
+        print("error root < 0 ")
+        return 0
+    sx_max=v*cos_o*t
+    if(sx_max<sx_need):
+        print("can shoot")
+        return 0
+    else:
+        return loop_findo(sx_need,sy,g,v)

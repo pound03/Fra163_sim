@@ -53,9 +53,9 @@ def loop_findo(sx_need,sy,g,v):
     percent=1
     up_level=1+percent*0.01
     low_level=1-percent*0.01
-    jearn=10
+    jearn=1
     # print("in")  
-    for i in range(90*jearn,0,-1):
+    for i in range(80*jearn,40,-1):
         # print()
         o_degree=i/jearn
         o_rad=np.deg2rad(o_degree)
@@ -64,7 +64,7 @@ def loop_findo(sx_need,sy,g,v):
         # print("v : %.3f \tsin : %.3f" % (v,sin_loop))
         # print("a : %.3f \tb : %.3f \tc : %.3f" % (g/2,v*-1*sin_loop,sy))
         t_loop=eqation(g/2,v*-1*sin_loop,sy)
-        # print("degree : %.3f\tsx_need : %.3f\tsy_need : %.3f" %(o_degree,sx_need,sy))
+        print("degree : %.3f\tsx_need : %.3f\tsy_need : %.3f" %(o_degree,sx_need,sy))
         """
         for j in t_loop:
             sx_loop=v*cos_loop*j
@@ -75,7 +75,7 @@ def loop_findo(sx_need,sy,g,v):
         """
         sx_loop=v*cos_loop*t_loop
 
-        # print("t_loop : %.3f\tsx_loop : %.3f" %(t_loop,sx_loop))
+        print("t_loop : %.3f\tsx_loop : %.3f" %(t_loop,sx_loop))
         if(sx_loop>=sx_need * low_level and sx_loop<=sx_need * up_level):
             #* that ok
             # print("ok")
@@ -98,12 +98,13 @@ def findofromv(sx_need,sy,g,v):
         return 0
     sx_max=v*cos_o*t
     if(sx_max<sx_need):
-        print("can shoot")
+        print("cannot shoot")
         return 0
     else:
+        print("can shoot")
         return loop_findo(sx_need,sy,g,v)
 
-kim=findofromv(1,1,9.81,6)
+kim=findofromv(2.24,0.25,9.81,5)
 print(kim)
 
 

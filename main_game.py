@@ -12,6 +12,7 @@ Created on Fri May 21 13:33:13 2021
 //wqer
 """
 
+from numpy.core.numeric import count_nonzero
 import pygame
 import numpy
 import class_game
@@ -26,8 +27,10 @@ if(True):
         forpint=""
         jearn=0 #* spirng or V
         bool_start=0
-        kim = 0 #* what degree for display
-
+        kim = 5 #* what degree for display
+        position_ball=[[192,184],[199,174],[198,174],[195,180],[193,183],[192,184], [190,193],[187,196],[186,198],[182,200]]
+        do_again = 0 #mode4
+        do_again2 = 0 #mode5
     #* time
     if(True):
         clock = pygame.time.Clock()
@@ -61,12 +64,13 @@ if(True):
         #* lilac
         lilac_list=[]
         if(True):
+
             buf=0
             buf2=-2
             buf=buf+buf2
-            
             lilac_35 = pygame.image.load("35_u.png")
-            lilac_35 = pygame.transform.scale(lilac_35, (lilac_x+buf, lilac_y))
+            image_w, image_h = lilac_35.get_size()
+            lilac_35 = pygame.transform.scale(lilac_35, (lilac_x+buf, int(image_h/2)))
             lilac_list.append(lilac_35)
             lilac_list.append(lilac_35)
             buf=buf+buf2
@@ -109,6 +113,7 @@ if(True):
             lilac_55 = pygame.transform.scale(lilac_55, (lilac_x+buf, lilac_y))
             lilac_list.append(lilac_55)
 
+    lilac_list[0]=lilac_list[5]
 
     #* setup box
     if(True):
@@ -186,7 +191,7 @@ if(True):
             draw_list.append(text_box_degree)
             size_y=size_y+delta_y_mini
 
-            degree=class_game.Input_box(60, size_y, 170, 32,"45",1,"O = ","°")
+            degree=class_game.Input_box(60, size_y, 170, 32,"45.0",1,"O = ","°")
             draw_list.append(degree)
             check_list.append(degree)
             reset_list.append(degree)
@@ -207,7 +212,7 @@ if(True):
             check_list.append(check_use_speed)
             size_y=size_y+delta_y
 
-            speed=class_game.Input_box(60, size_y, 170, 32,"4.00",1,"V = "," m/s")
+            speed=class_game.Input_box(60, size_y, 170, 32,"5.00",1,"V = "," m/s")
             draw_list.append(speed)
             check_list.append(speed)
             reset_list.append(speed)
@@ -233,7 +238,7 @@ if(True):
             new_word_list.append(spring_k)
             size_y=size_y+delta_y
 
-            spring_x=class_game.Input_box(40, size_y, 190, 32,"1",1,"lenght = "," m")
+            spring_x=class_game.Input_box(40, size_y, 190, 32,"6",1,"lenght = "," cm")
             draw_list.append(spring_x)
             check_list.append(spring_x)
             reset_list.append(spring_x)
@@ -265,18 +270,25 @@ if(True):
             draw_list.append(time_box)
             time_count_var = "0.00"
 
-            debug1=class_game.Input_box(20, 650, 200, 32,"200",0,"debug1 : ","")
+            debug1=class_game.Input_box(20, 680, 200, 32,"200",0,"debug1 : ","")
             draw_list.append(debug1)
             check_list.append(debug1)
             reset_list.append(debug1)
             new_word_list.append(debug1)
 
-            debug2=class_game.Input_box(20, 700, 200, 32,"40",0,"debug2 : ","")
+            debug2=class_game.Input_box(20, 730, 200, 32,"40",0,"debug2 : ","")
             draw_list.append(debug2)
             check_list.append(debug2)
             reset_list.append(debug2)
             new_word_list.append(debug2)
 
+            error_massage=class_game.labbel(20, size_y, 200, 32 , "","gray",False,"","",24)
+            draw_list.append(error_massage)
+            size_y=size_y+delta_y
+
+            error_massage2=class_game.labbel(20, size_y, 200, 32 , "","gray",False,"","",24)
+            draw_list.append(error_massage2)
+            size_y=size_y+delta_y
     #* setup ball
     ball=class_game.ball(5)
     ball.v.setspeed(4,45,9.81)
@@ -310,7 +322,7 @@ while True:
 
         #* set_pic
         if(sx_box.Text !='' and sy_box.Text !=''):
-            pot_position_x=float(sx_box.Text)*scale+size_ui_x
+            pot_position_x=float(sx_box.Text)*scale+size_ui_x+position_ball[kim][0]
             pot_position_y=size_pic_y-float(sy_box.Text)*scale-size_pot_hight
             
             # screen.blit(pot,(800,size_screen_hight-int(speed.Text)-size_pot_hight))
@@ -387,54 +399,120 @@ while True:
         # forpint=str(mode)
 
     #* calnumber
-    if(cal.active):
+    if(cal.active or do_again or do_again2):
         cal.active = False
+        for i in new_word_list:
+            if(i.Text == ""):
+                i.Text = i.default_value
         #* setpic_degree
+        """
         kim=kim+1
         if(kim==10):
             kim=0
-        forpint=str(kim)
+        
         """
         if(True):
-            if(int(degree.Text)>=35 and int(degree.Text) <=55):
-                if(int(degree.Text)<37):
+            if(float(degree.Text)>=35 and float(degree.Text) <=55):
+                if(float(degree.Text)<37):
                     kim=1  #35
-                elif(int(degree.Text)<40):
+                elif(float(degree.Text)<40):
                     kim=2  #37
-                elif(int(degree.Text)<42):
-                    kim=3  #42
-                elif(int(degree.Text)<45):
-                    kim=4  #45
-                elif(int(degree.Text)<47):
-                    kim=5  #47
-                elif(int(degree.Text)<50):
-                    kim=6  #50
-                elif(int(degree.Text)<52):
-                    kim=7  #52
-                elif(int(degree.Text)<55):
-                    kim=8  #55
+                elif(float(degree.Text)<42):
+                    kim=3  #40
+                elif(float(degree.Text)<45):
+                    kim=4  #42
+                elif(float(degree.Text)<47):
+                    kim=5  #45
+                elif(float(degree.Text)<50):
+                    kim=6  #47
+                elif(float(degree.Text)<52):
+                    kim=7  #50
+                elif(float(degree.Text)<55):
+                    kim=8  #52
                 else:
-                    kim=9  #35
+                    kim=9  #55
             else:
                 kim=0
-            """
+        
+        forpint=str(kim)
 
         #* setmode
         if(mode == 1):
             x=class_game.findxfromv(float(spring_k.Text),float(mass.Text),float(speed.Text))
-            spring_x.Text=str(round(x,2));
+            spring_x.Text=str(round(x*100,2))
             ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
         elif(mode == 2):
-            v=class_game.findVfromk(float(spring_k.Text),float(mass.Text),float(spring_x.Text))
+            v=class_game.findVfromk(float(spring_k.Text),float(mass.Text),float(spring_x.Text)/100)
             speed.Text=str(round(v,2));
             ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
+        elif(mode == 3):
+            sx=(goal_x-size_ui_x-position_ball[kim][0])/(100*scale)
+            sy=((size_pic_y-goal_y)-position_ball[kim][1])/(100*scale)
+            # print("sx : %.2f\tsx_box : %.2f\tsize_pot : %.2f"%(sx,float(sx_box.Text)/100,size_pot_wide/2))
+            # print("sy : %.2f\tsize_pic_y : %.2f\tgoal_y : %.2f\tpostionball : %.2f"%(sy,size_pic_y,goal_y,position_ball[kim][1]))
 
+            v=class_game.findvfromo(sx,sy,float(gravity.Text),float(degree.Text))
+            speed.Text=str(round(v,2));
+            x=class_game.findxfromv(float(spring_k.Text),float(mass.Text),float(speed.Text))
+            spring_x.Text=str(round(x*100,2));
+            ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
+        elif(mode == 4 or do_again):
+            if(do_again>0):
+                do_again = do_again-1
+            elif(do_again ==0):
+                do_again = 4
+            sx=(goal_x-size_ui_x-position_ball[kim][0])/(100*scale)
+            sy=((size_pic_y-goal_y)-position_ball[kim][1])/(100*scale)
+            ga=float(gravity.Text)
+            spe=float(speed.Text)
+            # print("sx : %.2f\tsx_box : %.2f\tsize_pot : %.2f"%(sx,float(sx_box.Text)/100,size_pot_wide/2))
+            # print("sy : %.2f\tsize_pic_y : %.2f\tgoal_y : %.2f\tpostionball : %.2f"%(sy,size_pic_y,goal_y,position_ball[kim][1]))
+            print("sx : %.2f\tsy : %.2f\tG : %.2f\tspeed : %.2f" %(sx,sy,ga,spe))
+            o=class_game.findofromv(sx,sy,ga,spe)
+            if(o==-5):
+
+                error_massage2.Text="cannot shoot"
+                continue
+            degree.Text=str(round(o,1))
+            x=class_game.findxfromv(float(spring_k.Text),float(mass.Text),float(speed.Text))
+            spring_x.Text=str(round(x,2));
+
+            ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
+        elif(mode == 5 or do_again2):
+            if(do_again2>0):
+                do_again2 = do_again2-1
+            elif(do_again2 ==0):
+                do_again2 = 4
+            buf=speed.Text
+            v=class_game.findVfromk(float(spring_k.Text),float(mass.Text),float(spring_x.Text)/100)
+            speed.Text=str(round(v,3));
+
+            sx=(goal_x-size_ui_x-position_ball[kim][0])/(100*scale)
+            sy=((size_pic_y-goal_y)-position_ball[kim][1])/(100*scale)
+            ga=float(gravity.Text)
+            spe=float(speed.Text)
+            # print("sx : %.2f\tsx_box : %.2f\tsize_pot : %.2f"%(sx,float(sx_box.Text)/100,size_pot_wide/2))
+            # print("sy : %.2f\tsize_pic_y : %.2f\tgoal_y : %.2f\tpostionball : %.2f"%(sy,size_pic_y,goal_y,position_ball[kim][1]))
+            print("sx : %.2f\tsy : %.2f\tG : %.2f\tspeed : %.2f" %(sx,sy,ga,spe))
+            o=class_game.findofromv(sx,sy,ga,spe)
+
+            if(o==-5):
+                speed.Text=buf
+                error_massage2.Text="cannot shoot"
+                continue
+            degree.Text=str(round(o,1))
+            ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
     #* degeree_for_start
 
     if(debug1.Text !='' and debug2.Text !=''):
-        ball.setposion_start(float(debug1.Text)*scale,float(debug2.Text)*scale)
+        ball.setposion_start(position_ball[kim][0],position_ball[kim][1])
         pygame.draw.circle(screen,'yellow', (float(debug1.Text)*scale+size_ui_x,size_pic_y-float(debug2.Text)*scale), 5)
+        # print([float(debug1.Text)*scale+size_ui_x,size_pic_y-float(debug2.Text)*scale])
+        pygame.draw.circle(screen,'yellow', (position_ball[kim][0]*1+size_ui_x,size_pic_y-position_ball[kim][1]*1), 5)
 
+    #* check error
+    if(kim==0):
+        error_massage.Text="no found image"
     #* fight
     if fight.active:
         #* fight 

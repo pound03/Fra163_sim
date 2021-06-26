@@ -88,6 +88,7 @@ class Input_box:
         self.off = not_use
         self.word_front=word1;
         self.word_end=word2;
+        self.default_value=self.Text
 
     def change(self):
         if(self.off):
@@ -202,6 +203,23 @@ class Tail:
         self.x = []
         self.y = []
 
+    """
+def findVfromk(k,m,o,g,x):
+    sin=np.sin(np.deg2rad(o))
+    v=(1/2*k*x*x-m*g*x*sin)*2/m
+    v=np.sqrt(v)
+    return v
+
+def findxfromv(k,m,o,g,v):
+    sin=np.sin(np.deg2rad(o))
+    a=k/2
+    b=-1*m*g*sin
+    c=-1/2*m*v*v
+    # print("a : %.3f \tb : %.3f \tc : %.3f" % (a,b,c))
+    x=eqation(a,b,c)
+    # print(x)
+    return x
+"""
 def findVfromk(k,m,x):
     v=k*x*x/m
     v=np.sqrt(v)
@@ -211,9 +229,8 @@ def findxfromv(k,m,v):
     x=v*v*m/k
     x=np.sqrt(x)
     return x
-
 def findvfromo(sx,sy,g,o):
-    sy=-sy
+
     degree=np.deg2rad(o)
     tan=np.tan(degree)
     cos=np.cos(degree)
@@ -235,7 +252,8 @@ def eqation(a,b,c):
     d = (b**2) - (4*a*c)
     # print("b**2 : %.3f\t4*a*c : %.3f" % (b**2,4*a*c))
     if(d<0):
-        print("error root less < 0")
+        # print("a : %.3f \tb : %.3f \tc : %.3f" % (a,b,c))
+        # print("error root less < 0")
         return 0
     # find two solutions  
     sol1 = (-b-np.sqrt(d))/(2*a)  
@@ -257,41 +275,36 @@ def findomax(sy,g,v):
     return jearn_rad
 
 def loop_findo(sx_need,sy,g,v):
-    percent=1
+    percent=0.1
     up_level=1+percent*0.01
     low_level=1-percent*0.01
     jearn=10
     # print("in")  
-    for i in range(90*jearn,0,-1):
+    for i in range(89*jearn,1,-1):
         # print()
         o_degree=i/jearn
         o_rad=np.deg2rad(o_degree)
         cos_loop=np.cos(o_rad)
         sin_loop=np.sin(o_rad)
-        # print("v : %.3f \tsin : %.3f" % (v,sin_loop))
-        # print("a : %.3f \tb : %.3f \tc : %.3f" % (g/2,v*-1*sin_loop,sy))
         t_loop=eqation(g/2,v*-1*sin_loop,sy)
-        # print("degree : %.3f\tsx_need : %.3f\tsy_need : %.3f" %(o_degree,sx_need,sy))
-        """
-        for j in t_loop:
-            sx_loop=v*cos_loop*j
-            print("t_loop : %.3f\tsx_loop : %.3f" %(j,sx_loop))
-            if(sx_loop>=sx_need * low_level and sx_loop<=sx_need * up_level):
-            #* that ok
-                return o_degree
-        """
+        if(t_loop==0):
+            # print("v : %.3f \tsin : %.3f" % (v,sin_loop))
+            # print("a : %.3f \tb : %.3f \tc : %.3f" % (g/2,v*-1*sin_loop,sy))
+            # print("degree : %.3f\tsx_need : %.3f\tsy_need : %.3f" %(o_degree,sx_need,sy))
+            # print("t_loop : %.3f\tsx_loop : %.3f" %(t_loop,sx_loop))
+            continue
         sx_loop=v*cos_loop*t_loop
 
-        # print("t_loop : %.3f\tsx_loop : %.3f" %(t_loop,sx_loop))
+        
         if(sx_loop>=sx_need * low_level and sx_loop<=sx_need * up_level):
             #* that ok
-            # print("ok")
+            # print("ok %.2f",%(o_degree))
             return o_degree
         else:
             continue
 
     print("fall")
-    return 0
+    return -5
 
 def findofromv(sx_need,sy,g,v):
     omax_rad=findomax(sy,g,v)
@@ -301,11 +314,12 @@ def findofromv(sx_need,sy,g,v):
     
     t=eqation(g/2,v*-1*sin_o,sy)
     if(t==0):
-        print("error root < 0 ")
+        # print("error root < 0 ")
         return 0
     sx_max=v*cos_o*t
     if(sx_max<sx_need):
-        print("can shoot")
+        # print("cannot shoot")
         return 0
     else:
+        print("can shoot")
         return loop_findo(sx_need,sy,g,v)

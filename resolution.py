@@ -5,7 +5,7 @@ size_pic_x=size_screen_wide-size_ui_x
 size_pic_y=600
 size_pot_wide=123
 size_pot_hight=185
-scale=1
+scale=3
 base_front=32
 front_labbel = 24
 

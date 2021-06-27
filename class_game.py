@@ -30,11 +30,15 @@ class Rec:
         self.w=size_x_input
         self.h=size_y_input
         self.rect_class=pygame.Rect(posi_x_input, posi_y_input, size_x_input, size_y_input)
-    
-class Button(Rec):
-    def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",color1_input='yellow',color2_input='pink'):
+
+class Font:
+    def __init__(self,font_size,color=(0,0,0)):
+        self.base_font = pygame.font.Font(None, font_size)
+        self.color_font=color
+class Button(Rec,Font):
+    def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",color1_input='yellow',color2_input='pink',font_size=base_front):
         Rec.__init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input)
-        self.base_font = pygame.font.Font(None, base_front)
+        Font.__init__(self,font_size)
         self.color_active = pygame.Color(color1_input)
         self.color_passive = pygame.Color(color2_input)
         self.color = self.color_passive
@@ -56,14 +60,15 @@ class Button(Rec):
 
     def draw(self,screen):
         self.change()
-        # pygame.draw.rect(screen,self.color,Rec.rect_class)
-        text_surface_time = self.base_font.render(self.Text, True, (0, 0, 0))
+        pygame.draw.rect(screen,self.color,self.rect_class)
+        text_surface_time = self.base_font.render(self.Text, True, self.color_font)
         screen.blit(text_surface_time, (self.rect_class.x+40, self.rect_class.y+5))
 
-class labbel(Rec):
-    def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",color1_input="Gray ",bool=True,word1="",word2="",size_front=front_labbel):
-        self.base_font = pygame.font.Font(None, size_front)
+class labbel(Rec,Font):
+    def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",color1_input="Gray ",bool=True,word1="",word2="",font_size=front_labbel):
         Rec.__init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input)
+        Font.__init__(self,font_size)
+
         self.color = pygame.Color(color1_input)
         self.Text = Text_input
         self.word_front=word1;
@@ -78,15 +83,16 @@ class labbel(Rec):
 
         dummy=self.Text + "     "
         dummy= self.word_front + dummy + self.word_end
-        text_surface_time = self.base_font.render(dummy, True, (0, 0, 0))
+        text_surface_time = self.base_font.render(dummy, True, self.color_font)
         screen.blit(text_surface_time, (self.rect_class.x+10, self.rect_class.y+x))
     def update_text(self,text_input):
         self.Text = text_input
 
-class Input_box(Rec):
-    def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",not_use= True,word1="",word2="",color1_input='BLUE',color2_input='chartreuse4'):
-        self.base_font = pygame.font.Font(None, base_front)
+class Input_box(Rec,Font):
+    def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",not_use= True,word1="",word2="",color1_input='BLUE',color2_input='chartreuse4',font_size=base_front):
         Rec.__init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input)
+        Font.__init__(self,font_size,(255,255,255))
+
         self.color_active = pygame.Color(color1_input)
         self.color_passive = pygame.Color(color2_input)
         self.color = self.color_passive
@@ -120,7 +126,7 @@ class Input_box(Rec):
         pygame.draw.rect(screen,self.color,self.rect_class)
         dummy=self.Text + "     "
         dummy=dummy[0:5]
-        text_surface_time = self.base_font.render(self.word_front + dummy + self.word_end, True, (255, 255, 255))
+        text_surface_time = self.base_font.render(self.word_front + dummy + self.word_end, True,  self.color_font)
         screen.blit(text_surface_time, (self.rect_class.x+10, self.rect_class.y+5))
 
     def new_word(self,event):
@@ -159,7 +165,7 @@ class Check_box(Rec):
         self.change()
         pygame.draw.rect(screen,self.color,self.rect_class)
     
-class ball:
+class ball(Velocity):
     def __init__(self,size_intput=1,posi_x_input=0,posi_y_input=0,color1_input='red',speed_input=500,degree=45):
         self.posi_x_add=posi_x_input
         self.posi_y_add=posi_y_input
@@ -167,17 +173,16 @@ class ball:
         self.color=color1_input
         self.posi_x=0
         self.posi_y=0
-        self.v= Velocity()
-        self.v.setspeed(speed_input, degree,9.81)
+        Velocity.__init__(self)
 
     def run(self,screen,time):
-        self.posi_x=self.v.get_position_x(time)+self.posi_x_add+size_ui_x
-        self.posi_y=size_pic_y-self.posi_y_add-self.v.get_position_y(time)
+        self.posi_x=self.get_position_x(time)+self.posi_x_add+size_ui_x
+        self.posi_y=size_pic_y-self.posi_y_add-self.get_position_y(time)
         # print("update")
         pygame.draw.circle(screen,self.color, (self.posi_x,self.posi_y), self.size)
 
     def check_fall(self,time):
-        if(self.v.get_position_y(time)+self.posi_y_add<-1):
+        if(self.get_position_y(time)+self.posi_y_add<-1):
             return True
         else:
             return False

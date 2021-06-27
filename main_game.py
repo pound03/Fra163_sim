@@ -292,7 +292,7 @@ if(True):
             size_y=size_y+delta_y
     #* setup ball
     ball=class_game.ball(5)
-    ball.v.setspeed(4,45,9.81)
+    ball.setspeed(4,45,9.81)
     tail = class_game.Tail()
     draw_list.append(tail)
 
@@ -329,18 +329,20 @@ while True:
             # screen.blit(pot,(800,size_screen_hight-int(speed.Text)-size_pot_hight))
             # print(size_screen_hight-int(speed.Text))
         elif(sy_box.Text !=''):
-            pot_position_x=size_ui_x
+            pot_position_x=size_ui_x+position_ball[kim][0]
             pot_position_y=size_pic_y-float(sy_box.Text)*scale-size_pot_hight
 
         elif(sx_box.Text !=''):
-            pot_position_x=float(sx_box.Text)*scale+size_ui_x
+            pot_position_x=float(sx_box.Text)*scale+size_ui_x+position_ball[kim][0]
             pot_position_y=size_pic_y-size_pot_hight
         else:
-            pot_position_x=size_ui_x
+            pot_position_x=size_ui_x+position_ball[kim][0]
             pot_position_y=size_pic_y-size_pot_hight
-        screen.blit(pot,(pot_position_x,pot_position_y))
+        
         goal_x=pot_position_x+size_pot_wide/2
         goal_y=pot_position_y+size_pot_hight/4
+        
+        screen.blit(pot,(pot_position_x,pot_position_y))
         pygame.draw.circle(screen,'yellow', (goal_x,goal_y), 5)
         screen.blit(lilac_list[kim],(size_ui_x,size_pic_y-lilac_y))
         # pygame.draw.circle(screen,'yellow', (size_ui_x,goal_y), 5)
@@ -441,11 +443,11 @@ while True:
         if(mode == 1):
             x=class_game.findxfromv(float(spring_k.Text),float(mass.Text),float(degree.Text),float(gravity.Text),float(speed.Text))
             spring_x.Text=str(round(x*100,2))
-            ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
+            ball.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
         elif(mode == 2):
             v=class_game.findVfromk(float(spring_k.Text),float(mass.Text),float(degree.Text),float(gravity.Text),float(spring_x.Text)/100)
             speed.Text=str(round(v,2));
-            ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
+            ball.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
         elif(mode == 3 or do_again3):
             if(do_again3>0):
                 do_again3 = do_again3-1
@@ -460,7 +462,7 @@ while True:
             speed.Text=str(round(v,2));
             x=class_game.findxfromv(float(spring_k.Text),float(mass.Text),float(degree.Text),float(gravity.Text),float(speed.Text))
             spring_x.Text=str(round(x*100,2));
-            ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
+            ball.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
         elif(mode == 4 or do_again):
             if(do_again>0):
                 do_again = do_again-1
@@ -483,7 +485,7 @@ while True:
             x=class_game.findxfromv(float(spring_k.Text),float(mass.Text),float(degree.Text),float(gravity.Text),float(speed.Text))
             spring_x.Text=str(round(x*100,2));
 
-            ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
+            ball.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
         elif(mode == 5 or do_again2):
             if(do_again2>0):
                 do_again2 = do_again2-1
@@ -508,7 +510,7 @@ while True:
             error_massage2.Text=""
             degree.Text=str(round(o[1],2))
             speed.Text=str(round(o[0],2))
-            ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
+            ball.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
     #* degeree_for_start
 
     if(debug1.Text !='' and debug2.Text !=''):
@@ -550,7 +552,7 @@ while True:
     if(save.active):
         save.active=False
         print("print_data")
-        file1 = open("output.txt","a")
+        file1 = open("output.csv","a")
         file1.write("input,sx(cm),sy(cm),mass(KG),gravity(m/s^2),degree(°),speed(m/s),spring_k(n/m),lenght(cm),mode,pic_number,sx_real(cm),sy_real(cm),positionstart_x(cm),positionstart_y(cm)\n")
         buf=""
         # print(tail.detail_shoot)

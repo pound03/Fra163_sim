@@ -23,11 +23,18 @@ class Velocity:
         self.V_y=speed_input*np.sin(np.deg2rad(degree))
         self.gravity=g
 
-
-class Button:
+class Rec:
+    def __init__(self,posi_x_input=0,posi_y_input=0,size_x_input=0,size_y_input=0):
+        self.postionx=posi_x_input
+        self.postiony=posi_y_input
+        self.w=size_x_input
+        self.h=size_y_input
+        self.rect_class=pygame.Rect(posi_x_input, posi_y_input, size_x_input, size_y_input)
+    
+class Button(Rec):
     def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",color1_input='yellow',color2_input='pink'):
+        Rec.__init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input)
         self.base_font = pygame.font.Font(None, base_front)
-        self.rect_class = pygame.Rect(posi_x_input, posi_y_input, size_x_input, size_y_input)
         self.color_active = pygame.Color(color1_input)
         self.color_passive = pygame.Color(color2_input)
         self.color = self.color_passive
@@ -49,14 +56,14 @@ class Button:
 
     def draw(self,screen):
         self.change()
-        pygame.draw.rect(screen,self.color,self.rect_class)
+        # pygame.draw.rect(screen,self.color,Rec.rect_class)
         text_surface_time = self.base_font.render(self.Text, True, (0, 0, 0))
         screen.blit(text_surface_time, (self.rect_class.x+40, self.rect_class.y+5))
 
-class labbel:
+class labbel(Rec):
     def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",color1_input="Gray ",bool=True,word1="",word2="",size_front=front_labbel):
         self.base_font = pygame.font.Font(None, size_front)
-        self.rect_class = pygame.Rect(posi_x_input, posi_y_input, size_x_input, size_y_input)
+        Rec.__init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input)
         self.color = pygame.Color(color1_input)
         self.Text = Text_input
         self.word_front=word1;
@@ -76,10 +83,10 @@ class labbel:
     def update_text(self,text_input):
         self.Text = text_input
 
-class Input_box:
+class Input_box(Rec):
     def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,Text_input="",not_use= True,word1="",word2="",color1_input='BLUE',color2_input='chartreuse4'):
         self.base_font = pygame.font.Font(None, base_front)
-        self.rect_class = pygame.Rect(posi_x_input, posi_y_input, size_x_input, size_y_input)
+        Rec.__init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input)
         self.color_active = pygame.Color(color1_input)
         self.color_passive = pygame.Color(color2_input)
         self.color = self.color_passive
@@ -124,9 +131,9 @@ class Input_box:
                 if(len(self.Text)<4):
                     self.Text += event.unicode
 
-class Check_box:
+class Check_box(Rec):
     def __init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input,color1_input='chartreuse4',color2_input='lightskyblue3'):
-        self.rect_class = pygame.Rect(posi_x_input, posi_y_input, size_x_input, size_y_input)
+        Rec.__init__(self,posi_x_input,posi_y_input,size_x_input,size_y_input)
         self.color_active = pygame.Color(color1_input)
         self.color_passive = pygame.Color(color2_input)
         self.color = self.color_passive

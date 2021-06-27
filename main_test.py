@@ -1,4 +1,4 @@
-from class_test import Person
+import class_test
 import numpy as np
 import cmath  
 from resolution import *
@@ -104,9 +104,13 @@ def findofromv(sx_need,sy,g,v):
         print("can shoot")
         return loop_findo(sx_need,sy,g,v)
 
-kim=findofromv(2.24,0.25,9.81,5)
-print(kim)
-
+# kim=findofromv(2.24,0.25,9.81,5)
+# print(kim)
+print("hello")
+ob=class_test.student("kim",18)
+ob.showname()
+# a.changename("jearn")
+# a.showname()
 
 
 

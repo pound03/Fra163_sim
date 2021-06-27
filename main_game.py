@@ -17,7 +17,6 @@ import pygame
 import numpy
 import class_game
 from resolution import *
-
 #* global varialbe
 if(True):
     #* global varialbe
@@ -31,13 +30,15 @@ if(True):
         position_ball=[[192,184],[199,174],[198,174],[195,180],[193,183],[192,184], [190,193],[187,196],[186,198],[182,200]]
         do_again = 0 #mode4
         do_again2 = 0 #mode5
+        do_again3 = 0 #mode3
+        tar = 0
     #* time
     if(True):
         clock = pygame.time.Clock()
-        FPS=60
+        FPS=120
         time_count=0
         time_delta=1/FPS
-        time_save=20
+        time_save=1 #xframe tosave
     
     #* resolution screen
     # if(True):
@@ -238,7 +239,7 @@ if(True):
             new_word_list.append(spring_k)
             size_y=size_y+delta_y
 
-            spring_x=class_game.Input_box(40, size_y, 190, 32,"6",1,"lenght = "," cm")
+            spring_x=class_game.Input_box(40, size_y, 190, 32,"7.5",1,"lenght = "," cm")
             draw_list.append(spring_x)
             check_list.append(spring_x)
             reset_list.append(spring_x)
@@ -271,16 +272,16 @@ if(True):
             time_count_var = "0.00"
 
             debug1=class_game.Input_box(20, 680, 200, 32,"200",0,"debug1 : ","")
-            draw_list.append(debug1)
-            check_list.append(debug1)
-            reset_list.append(debug1)
-            new_word_list.append(debug1)
+            # draw_list.append(debug1)
+            # check_list.append(debug1)
+            # reset_list.append(debug1)
+            # new_word_list.append(debug1)
 
             debug2=class_game.Input_box(20, 730, 200, 32,"40",0,"debug2 : ","")
-            draw_list.append(debug2)
-            check_list.append(debug2)
-            reset_list.append(debug2)
-            new_word_list.append(debug2)
+            # draw_list.append(debug2)
+            # check_list.append(debug2)
+            # reset_list.append(debug2)
+            # new_word_list.append(debug2)
 
             error_massage=class_game.labbel(20, size_y, 200, 32 , "","gray",False,"","",24)
             draw_list.append(error_massage)
@@ -399,7 +400,7 @@ while True:
         # forpint=str(mode)
 
     #* calnumber
-    if(cal.active or do_again or do_again2):
+    if(cal.active or do_again or do_again2 or do_again3):
         cal.active = False
         for i in new_word_list:
             if(i.Text == ""):
@@ -438,14 +439,18 @@ while True:
 
         #* setmode
         if(mode == 1):
-            x=class_game.findxfromv(float(spring_k.Text),float(mass.Text),float(speed.Text))
+            x=class_game.findxfromv(float(spring_k.Text),float(mass.Text),float(degree.Text),float(gravity.Text),float(speed.Text))
             spring_x.Text=str(round(x*100,2))
             ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
         elif(mode == 2):
-            v=class_game.findVfromk(float(spring_k.Text),float(mass.Text),float(spring_x.Text)/100)
+            v=class_game.findVfromk(float(spring_k.Text),float(mass.Text),float(degree.Text),float(gravity.Text),float(spring_x.Text)/100)
             speed.Text=str(round(v,2));
             ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
-        elif(mode == 3):
+        elif(mode == 3 or do_again3):
+            if(do_again3>0):
+                do_again3 = do_again3-1
+            elif(do_again3 ==0):
+                do_again3 = 4
             sx=(goal_x-size_ui_x-position_ball[kim][0])/(100*scale)
             sy=((size_pic_y-goal_y)-position_ball[kim][1])/(100*scale)
             # print("sx : %.2f\tsx_box : %.2f\tsize_pot : %.2f"%(sx,float(sx_box.Text)/100,size_pot_wide/2))
@@ -453,7 +458,7 @@ while True:
 
             v=class_game.findvfromo(sx,sy,float(gravity.Text),float(degree.Text))
             speed.Text=str(round(v,2));
-            x=class_game.findxfromv(float(spring_k.Text),float(mass.Text),float(speed.Text))
+            x=class_game.findxfromv(float(spring_k.Text),float(mass.Text),float(degree.Text),float(gravity.Text),float(speed.Text))
             spring_x.Text=str(round(x*100,2));
             ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
         elif(mode == 4 or do_again):
@@ -467,15 +472,16 @@ while True:
             spe=float(speed.Text)
             # print("sx : %.2f\tsx_box : %.2f\tsize_pot : %.2f"%(sx,float(sx_box.Text)/100,size_pot_wide/2))
             # print("sy : %.2f\tsize_pic_y : %.2f\tgoal_y : %.2f\tpostionball : %.2f"%(sy,size_pic_y,goal_y,position_ball[kim][1]))
-            print("sx : %.2f\tsy : %.2f\tG : %.2f\tspeed : %.2f" %(sx,sy,ga,spe))
+            # print("sx : %.2f\tsy : %.2f\tG : %.2f\tspeed : %.2f" %(sx,sy,ga,spe))
             o=class_game.findofromv(sx,sy,ga,spe)
             if(o==-5):
 
                 error_massage2.Text="cannot shoot"
                 continue
-            degree.Text=str(round(o,1))
-            x=class_game.findxfromv(float(spring_k.Text),float(mass.Text),float(speed.Text))
-            spring_x.Text=str(round(x,2));
+            error_massage2.Text=""
+            degree.Text=str(round(o,2))
+            x=class_game.findxfromv(float(spring_k.Text),float(mass.Text),float(degree.Text),float(gravity.Text),float(speed.Text))
+            spring_x.Text=str(round(x*100,2));
 
             ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
         elif(mode == 5 or do_again2):
@@ -483,24 +489,25 @@ while True:
                 do_again2 = do_again2-1
             elif(do_again2 ==0):
                 do_again2 = 4
-            buf=speed.Text
-            v=class_game.findVfromk(float(spring_k.Text),float(mass.Text),float(spring_x.Text)/100)
-            speed.Text=str(round(v,3));
+            
 
             sx=(goal_x-size_ui_x-position_ball[kim][0])/(100*scale)
             sy=((size_pic_y-goal_y)-position_ball[kim][1])/(100*scale)
             ga=float(gravity.Text)
-            spe=float(speed.Text)
+            spr=float(spring_k.Text)
+            ma=float(mass.Text)
+            xx=float(spring_x.Text)/100
             # print("sx : %.2f\tsx_box : %.2f\tsize_pot : %.2f"%(sx,float(sx_box.Text)/100,size_pot_wide/2))
             # print("sy : %.2f\tsize_pic_y : %.2f\tgoal_y : %.2f\tpostionball : %.2f"%(sy,size_pic_y,goal_y,position_ball[kim][1]))
-            print("sx : %.2f\tsy : %.2f\tG : %.2f\tspeed : %.2f" %(sx,sy,ga,spe))
-            o=class_game.findofromv(sx,sy,ga,spe)
+            # print("sx : %.2f\tsy : %.2f\tG : %.2f\tspeed : %.2f" %(sx,sy,ga,spe))
+            o=class_game.findofromk(sx,sy,ga,spr,ma,xx)
 
-            if(o==-5):
-                speed.Text=buf
+            if(o[0]==0):
                 error_massage2.Text="cannot shoot"
                 continue
-            degree.Text=str(round(o,1))
+            error_massage2.Text=""
+            degree.Text=str(round(o[1],2))
+            speed.Text=str(round(o[0],2))
             ball.v.setspeed(float(speed.Text),float(degree.Text),float(gravity.Text))
     #* degeree_for_start
 
@@ -518,10 +525,12 @@ while True:
         #* fight 
         if active_1st:
             # tail.reset()
-            
             active_1st = False
-        if(time_count % time_save):
-            tail.add_position(ball.posi_x,ball.posi_y)
+        # print(time_count*100)
+
+        if(time_count >0):
+            # print("add : %.2f\t%.2f"%(ball.posi_x,ball.posi_y))
+            tail.add_position(ball.posi_x,ball.posi_y,time_count)
         # pygame.draw.circle(screen,'red', (v.get_position_x(time_count)+size_ui_x,size_pic_y-v.get_position_y(time_count)), 20)
         
         ball.setsize(float(mass.Text))
@@ -538,11 +547,82 @@ while True:
         time_count_var = "0.00         "
         tail.reset()
 
+    if(save.active):
+        save.active=False
+        print("print_data")
+        file1 = open("output.txt","a")
+        file1.write("input,sx(cm),sy(cm),mass(KG),gravity(m/s^2),degree(°),speed(m/s),spring_k(n/m),lenght(cm),mode,pic_number,sx_real(cm),sy_real(cm),positionstart_x(cm),positionstart_y(cm)\n")
+        buf=""
+        # print(tail.detail_shoot)
+        for i in range(len(tail.detail_shoot)):
+            buf=str(i+1)+","
+
+            tail.detail_shoot[i][12]=tail.detail_shoot[i][12]*100
+            tail.detail_shoot[i][13]=tail.detail_shoot[i][13]*100
+            for j in tail.detail_shoot[i]:
+
+                buf=buf+str(j)+","
+            buf=buf+"\n"
+            file1.write(buf)
+
+            buf="t(ms),"
+            for j in tail.postionball[i][2]:
+                buf=buf+str(j)+","
+            buf=buf+"\n"
+            file1.write(buf)
+
+            buf="x(cm_global),"
+            for j in tail.postionball[i][0]:
+                buf=buf+str(j)+","
+            buf=buf+"\n"
+            file1.write(buf)
+
+            buf="y(cm_global),"
+            for j in tail.postionball[i][1]:
+                buf=buf+str(j)+","
+            buf=buf+"\n"
+            file1.write(buf)
+
+            buf="sx(cm),"
+            for j in tail.postionball[i][0]:
+                buf=buf+str(round(j-tail.detail_shoot[i][12],2))+","
+            buf=buf+"\n"
+            file1.write(buf)
+
+            buf="sy(cm),"
+            for j in tail.postionball[i][1]:
+                buf=buf+str(round(j-tail.detail_shoot[i][13],2))+","
+            buf=buf+"\n"
+            file1.write(buf)
+
+            tail.detail_shoot[i][12]=tail.detail_shoot[i][12]/100
+            tail.detail_shoot[i][13]=tail.detail_shoot[i][13]/100
+        file1.write("\n\n")
+        file1.close()
+
     #* fall
     if(ball.check_fall(time_count)):
+        
+        sx=(goal_x-size_ui_x)/(100*scale)
+        sy=((size_pic_y-goal_y))/(100*scale)
+        ballposiotion_x=position_ball[kim][0]/(100*scale)
+        ballposiotion_y=position_ball[kim][1]/(100*scale)
+        buf2=[]
+        buf1=[mode,kim,sx,sy,ballposiotion_x,ballposiotion_y]
+
+        for i in new_word_list:
+            buf2.append(float(i.Text))
+        for i in buf1:
+            buf2.append(i)
+        buf2=[round(num, 2) for num in buf2]
+        tail.detail_shoot.append(buf2)
+
         time_count=0
         fight.active = False
         active_1st = True
+        tail.next()
+        # print(tail.detail_shoot)
+        # print(tail.postionball)
 
     #* update
     time_box.update_text(time_count_var[0:5])
